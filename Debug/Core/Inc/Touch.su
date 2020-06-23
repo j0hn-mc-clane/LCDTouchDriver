@@ -1,0 +1,8 @@
+Touch.c:36:5:map	24	static
+Touch.c:40:6:Touch_Init	16	static
+Touch.c:47:6:setupForReadY	24	static
+Touch.c:76:6:setupForReadX	24	static
+Touch.c:106:5:readChannelXMin	32	static
+Touch.c:126:5:readTouchY	16	static
+Touch.c:132:5:readChannelYPlus	32	static
+Touch.c:152:5:readTouchX	16	static
