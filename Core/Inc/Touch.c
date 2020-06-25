@@ -102,7 +102,7 @@ int readChannelXMin() {
 	ADC_ChannelConfTypeDef sConfig;
 	sConfig.Channel = ADC_CHANNEL_13;
 	sConfig.Rank = ADC_REGULAR_RANK_1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+	sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
 	int config = HAL_ADC_ConfigChannel(&adcHandle, &sConfig);
 	if (config != HAL_OK)
 	{
@@ -128,7 +128,7 @@ int readChannelYPlus() {
 	ADC_ChannelConfTypeDef sConfig;
 	sConfig.Channel = ADC_CHANNEL_12;
 	sConfig.Rank = ADC_REGULAR_RANK_1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+	sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
 	int config = HAL_ADC_ConfigChannel(&adcHandle, &sConfig);
 	if (config != HAL_OK)
 	{

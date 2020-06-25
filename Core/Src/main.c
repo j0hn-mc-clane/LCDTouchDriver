@@ -189,6 +189,7 @@ int main(void)
 				if(checkIfInBoundary(&clear_button, current_x)) {
 					in_button = 1;
 					enabled_action = clear_button.action;
+					default_screen();
 					printf("User tapped clear button\n");
 				}
 
@@ -218,7 +219,7 @@ int main(void)
 					case 3:
 						break;
 					case 4:
-						default_screen();
+
 						break;
 					default: LCD_DrawPixel(current_x, current_y, HX8357_WHITE); break;
 					}
