@@ -10,11 +10,6 @@
 #define YMIN_Pin GPIO_PIN_10
 #define YMIN_GPIO_Port GPIOA
 
-#define TS_MINX 440
-#define TS_MINY 295
-#define TS_MAXX 3600
-#define TS_MAXY 3740
-
 // Scale from ~0->1000 to tft.width using the calibration #'s
 //  p.x = map(p.x, TS_MINX, TS_MAXX, 0, tft.width());
 //  p.y = map(p.y, TS_MINY, TS_MAXY, 0, tft.height());
