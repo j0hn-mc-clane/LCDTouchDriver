@@ -23,7 +23,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
- ../Core/Inc/Touch.h ../Core/Inc/LCD_Driver.h
+ ../Core/Inc/Touch.h ../Core/Inc/LCD_Driver.h ../Core/Inc/icons.h
 
 ../Core/Inc/main.h:
 
@@ -78,3 +78,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/Touch.h:
 
 ../Core/Inc/LCD_Driver.h:
+
+../Core/Inc/icons.h:

@@ -29,6 +29,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include<math.h>
+#include "icons.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -75,16 +76,16 @@ int _write(int file, char *ptr, int len) {
 struct Button {
 	int start_x, start_y, end_x, end_y;
 	uint8_t action;
-	uint16_t icon[];
+	const uint8_t * icon;
 };
 
 void drawStruct(struct Button * p) {
 	uint16_t color;
 	switch(p->action) {
-	case 1: color = HX8357_BLUE; break;
-	case 2: color= HX8357_RED; break;
-	case 3: color = HX8357_GREEN; break;
-	default: color = HX8357_YELLOW; break;
+	case 1: color = HX8357_BLUE; p->icon = line_icon; break;
+	case 2: color= HX8357_RED;  p->icon = circle_icon; break;
+	case 3: color = HX8357_GREEN;  p->icon = graph_icon; break;
+	default: color = HX8357_YELLOW;  p->icon = trash_icon; break;
 	}
 	LCD_Fill_Rect(p->start_x, p->start_y, p->end_x, p->end_y, color);
 }
@@ -151,6 +152,8 @@ int main(void)
 	int previous_x, previous_y = 0;
 	uint8_t enabled_action = 0;
 	uint8_t in_button;
+	int text_coords[2] = {300, 40};
+	int polygon_coordinates[5];
 	/* USER CODE END 2 */
 
 
@@ -172,6 +175,7 @@ int main(void)
 				if(checkIfInBoundary(&line_button, current_x)) {
 					in_button = 1;
 					enabled_action = line_button.action;
+					LCD_printText("LINE", text_coords[0], text_coords[1], HX8357_WHITE, HX8357_BLACK, 4);
 					printf("User tapped line button\n");
 				}
 
@@ -219,7 +223,6 @@ int main(void)
 					case 3:
 						break;
 					case 4:
-
 						break;
 					default: LCD_DrawPixel(current_x, current_y, HX8357_WHITE); break;
 					}
@@ -234,7 +237,7 @@ int main(void)
 			}
 		}
 
-		// Kind of like dender relay for button
+		// Kind of like dender relay for push button
 		HAL_Delay(50);
 
 	}
