@@ -789,6 +789,18 @@ void LCD_printText(char text[], int16_t x, int16_t y, uint16_t color, uint16_t b
 	}
 }
 
+void LCD_printIcon(uint16_t x, uint16_t y, uint16_t w, uint8_t *data,
+		uint32_t size) {
+	uint32_t n = size;
+	LCD_SetCursorPosition(x, y, w-1, y);
+
+	for (uint32_t i = 0; i < n; i++) {
+		LCD_SendData(data[i]);
+	}
+
+	LCD_SendData(data[size-1] & 0xFF);
+}
+
 //12. Image print (RGB 565, 2 bytes per pixel)
 void LCD_printImage(uint16_t y, uint16_t w, uint8_t *data,
 		uint32_t size) {

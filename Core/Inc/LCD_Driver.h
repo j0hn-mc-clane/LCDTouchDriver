@@ -161,7 +161,10 @@ void LCD_drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_
 void LCD_printText(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size);
 //12. Image print (RGB 565, 2 bytes per pixel)
 void LCD_printImage( uint16_t y, uint16_t w, uint8_t *data, uint32_t size);
+void LCD_printIcon(uint16_t x, uint16_t y, uint16_t w, uint8_t *data, uint32_t size);
+
 //13. Set screen rotation
 void LCD_setRotation(uint8_t rotate);
 //14. Get screen rotation
 uint8_t LCD_getRotation(void);
+

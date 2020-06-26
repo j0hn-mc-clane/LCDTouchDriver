@@ -87,6 +87,13 @@ void drawStruct(struct Button * p) {
 	case 3: color = HX8357_GREEN;  p->icon = graph_icon; break;
 	default: color = HX8357_YELLOW;  p->icon = trash_icon; break;
 	}
+
+	int center_x = abs(p->end_x - p->start_x);
+	int center_y = abs(p->end_y - p->start_y);
+	// 32 bit
+	center_x -= 16;
+	center_y -= 16;
+	LCD_printIcon(center_x, center_y, 32, p->icon, 3072);
 	LCD_Fill_Rect(p->start_x, p->start_y, p->end_x, p->end_y, color);
 }
 
