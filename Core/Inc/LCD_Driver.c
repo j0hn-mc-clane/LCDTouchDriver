@@ -789,16 +789,25 @@ void LCD_printText(char text[], int16_t x, int16_t y, uint16_t color, uint16_t b
 	}
 }
 
-void LCD_printIcon(uint16_t x, uint16_t y, uint16_t w, uint8_t *data,
-		uint32_t size) {
-	uint32_t n = size;
-	LCD_SetCursorPosition(x, y, w-1, y);
+void LCD_printIcon(uint16_t x, uint16_t y, uint16_t *data) {
+		int i;
+		int rowCount = 0;
+		int colCount = 0;
 
-	for (uint32_t i = 0; i < n; i++) {
-		LCD_SendData(data[i]);
-	}
+		for(i = 0; i < 1024; i++) {
+			uint32_t current_value = data[i];
+			if(colCount == 32) {
+				colCount = 0;
+				rowCount++;
+			}
 
-	LCD_SendData(data[size-1] & 0xFF);
+			if(current_value  == 0) {
+				LCD_DrawPixel(x - rowCount, y - colCount, HX8357_BLACK);
+			}
+
+			colCount++;
+		}
+
 }
 
 //12. Image print (RGB 565, 2 bytes per pixel)

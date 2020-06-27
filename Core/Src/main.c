@@ -76,25 +76,27 @@ int _write(int file, char *ptr, int len) {
 struct Button {
 	int start_x, start_y, end_x, end_y;
 	uint8_t action;
-	const uint8_t * icon;
+	const uint16_t * icon;
 };
 
 void drawStruct(struct Button * p) {
 	uint16_t color;
 	switch(p->action) {
-	case 1: color = HX8357_BLUE; p->icon = line_icon; break;
-	case 2: color= HX8357_RED;  p->icon = circle_icon; break;
-	case 3: color = HX8357_GREEN;  p->icon = graph_icon; break;
+	case 1: color = HX8357_BLUE; p->icon = pencil_icon; break;
+	case 2: color= HX8357_RED;  p->icon = line_icon; break;
+	case 3: color= HX8357_CYAN;  p->icon = circle_icon; break;
+	case 4: color= HX8357_GREEN;  p->icon = graph_icon; break;
 	default: color = HX8357_YELLOW;  p->icon = trash_icon; break;
 	}
 
-	int center_x = abs(p->end_x - p->start_x);
-	int center_y = abs(p->end_y - p->start_y);
+	int center_x = abs(p->end_x - p->start_x) + p->start_x;
+	int center_y = abs(p->end_y - p->start_y) + p->start_y;
 	// 32 bit
-	center_x -= 16;
-	center_y -= 16;
-	LCD_printIcon(center_x, center_y, 32, p->icon, 3072);
+	center_x -= 4;
+	center_y -= 4;
 	LCD_Fill_Rect(p->start_x, p->start_y, p->end_x, p->end_y, color);
+	LCD_printIcon(center_x, center_y, p->icon);
+
 }
 
 uint8_t checkIfInBoundary(struct Button * p, int x_coor) {
@@ -105,13 +107,16 @@ uint8_t checkIfInBoundary(struct Button * p, int x_coor) {
 	return 0;
 }
 
-struct Button line_button = {20, 400, 60, 480, 1 };
-struct Button circle_button  = {80, 400, 120, 480, 2 };
-struct Button polygon_button  = {140, 400, 180, 480, 3 };
-struct Button clear_button  = {200, 400, 240, 480, 4 };
+struct Button clear_button = {20, 0, 60, 40, 5 };
+struct Button polygon_button  = {80, 0, 120, 40, 4 };
+struct Button circle_button  = {140, 0, 180, 40, 3 };
+struct Button line_button  = {200, 0, 240, 40, 2 };
+struct Button pencil_button = {260, 0, 300, 40, 1 };
+
 
 void default_screen() {
-	LCD_Fill(HX8357_BLACK);
+	LCD_Fill(HX8357_WHITE);
+	drawStruct(&pencil_button);
 	drawStruct(&line_button);
 	drawStruct(&circle_button);
 	drawStruct(&polygon_button);
@@ -159,8 +164,10 @@ int main(void)
 	int previous_x, previous_y = 0;
 	uint8_t enabled_action = 0;
 	uint8_t in_button;
-	int text_coords[2] = {300, 40};
-	int polygon_coordinates[5];
+	int text_coords[2] = {0, 460};
+	int triangle_coords[3][2] = {{0, 0}, {0, 0}, {0, 0}};
+	uint8_t completeTriangle = 0;
+	int triangle_coord_count = 0;
 	/* USER CODE END 2 */
 
 
@@ -177,24 +184,32 @@ int main(void)
 		if(current_x > 0 && current_y > 0) {
 			// 1. Check if in boundary of button
 			// 2. Also determine action
-			if(current_y >= 400 && current_y <= 480) {
+			if(current_y >= 0 && current_y <= 40) {
 				in_button = 0;
+				if(checkIfInBoundary(&pencil_button, current_x)) {
+					in_button = 1;
+					enabled_action = pencil_button.action;
+					LCD_printText("PIXEL  ", text_coords[0], text_coords[1], HX8357_BLACK, HX8357_WHITE, 1);
+					printf("User tapped line button\n");
+				}
 				if(checkIfInBoundary(&line_button, current_x)) {
 					in_button = 1;
 					enabled_action = line_button.action;
-					LCD_printText("LINE", text_coords[0], text_coords[1], HX8357_WHITE, HX8357_BLACK, 4);
+					LCD_printText("LINE   ", text_coords[0], text_coords[1], HX8357_BLACK, HX8357_WHITE, 1);
 					printf("User tapped line button\n");
 				}
 
 				if(checkIfInBoundary(&circle_button, current_x)) {
 					in_button = 1;
 					enabled_action = circle_button.action;
+					LCD_printText("CIRCLE  ", text_coords[0], text_coords[1], HX8357_BLACK, HX8357_WHITE, 1);
 					printf("User tapped circle button\n");
 				}
 
 				if(checkIfInBoundary(&polygon_button, current_x)) {
 					in_button = 1;
 					enabled_action = polygon_button.action;
+					LCD_printText("POLYGON", text_coords[0], text_coords[1], HX8357_BLACK, HX8357_WHITE, 1);
 					printf("User tapped polygon button\n");
 				}
 				if(checkIfInBoundary(&clear_button, current_x)) {
@@ -215,23 +230,46 @@ int main(void)
 				if(previous_x > 0 && previous_y > 0) {
 					switch(enabled_action) {
 					// 1 = line, 2 = circle, 3 = polygon
-					case 1:
-						LCD_drawLine(previous_x, previous_y, current_x, current_y, HX8357_WHITE);
-						break;
+					case 1: LCD_DrawPixel(current_x, current_y, HX8357_BLACK); break;
 					case 2:
+						LCD_drawLine(previous_x, previous_y, current_x, current_y, HX8357_BLACK);
+						break;
+					case 3:
 						// Get distance
 						x_diff = abs(current_x - previous_x);
 						y_diff = abs(current_y - previous_y);
 						x_diff = pow(x_diff, 2);
 						y_diff = pow(y_diff, 2);
 						radius = sqrt((x_diff + y_diff));
-						LCD_drawCircle(previous_x, previous_y, radius, HX8357_WHITE);
-						break;
-					case 3:
+						LCD_drawCircle(previous_x, previous_y, radius, HX8357_BLACK);
 						break;
 					case 4:
+						completeTriangle = 1;
+						for(int i = 0; i < 3; i++) {
+							for(int j = 0; j < 2; j++) {
+								if(triangle_coords[i][j] == 0) {
+									completeTriangle = 0;
+								}
+							}
+						}
+						if(completeTriangle) {
+							LCD_fillTriangle(triangle_coords[0][0], triangle_coords[0][1], triangle_coords[1][0], triangle_coords[1][1],triangle_coords[2][0], triangle_coords[2][1], HX8357_MAGENTA);
+							triangle_coord_count = 0;
+							triangle_coords[0][0] = 0;
+							triangle_coords[0][1] = 0;
+							triangle_coords[1][0] = 0;
+							triangle_coords[1][1] = 0;
+							triangle_coords[2][0] = 0;
+							triangle_coords[2][1] = 0;
+						} else {
+							triangle_coords[triangle_coord_count][0] = current_x;
+							triangle_coords[triangle_coord_count][1] = current_y;
+							triangle_coord_count++;
+						}
 						break;
-					default: LCD_DrawPixel(current_x, current_y, HX8357_WHITE); break;
+					case 5:
+						break;
+					default: LCD_DrawPixel(current_x, current_y, HX8357_BLACK); break;
 					}
 
 					// Action finished
