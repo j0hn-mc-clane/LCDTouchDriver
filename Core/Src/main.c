@@ -261,6 +261,7 @@ int main(void)
 							triangle_coords[1][1] = 0;
 							triangle_coords[2][0] = 0;
 							triangle_coords[2][1] = 0;
+
 						} else {
 							triangle_coords[triangle_coord_count][0] = current_x;
 							triangle_coords[triangle_coord_count][1] = current_y;
